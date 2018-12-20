@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+	{{ date }}
+	{{ heure }}
+
+	{# path() permet de générer dynamiquement le bon lien #}
+
+	<a href="{{ path('bonjour') }}">Bonjour</a>
+	<a href="{{ path('bonjourNom', {nom: 'toto'}) }}">Bonjour nom</a>
+
+</body>
+</html>

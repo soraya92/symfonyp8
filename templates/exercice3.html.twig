@@ -4,37 +4,11 @@
 	<title></title>
 </head>
 <body>
-	<h1>Page d'accueil</h1>
-	<p>Ceci est une page d'accueil</p>
 	
 
-	{# commentaires twig #}
-	{# pour afficher une variable #}
-	{#
-		{{ mavariable }}
-	#}
 
-	{# boucle #}
-
-	{#
-
-	{% for article in articles %}
-
-	{% endfor %}
-
-	#}
-
-	{#condition #}
-
-	{#
-	{% if mavariable == "toto" %}
-
-	{% endif %}
-
-	#}
-
-	Bonjour {{ nom }}
-
+	<h1>Bonjour pseudo</h1>
+	<p>bonjour {{pseudo}}, tu as {{age}} an{% if age > 1 %}s{% endif %}</p>
 	<a href="{{ path('bonjour') }}">Bonjour</a>
 	<a href="{{ path('bonjourNom', {nom: 'toto'}) }}">Bonjour nom</a>
 	<a href="{{ path('merci') }}">Merci</a>

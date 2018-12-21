@@ -23,7 +23,7 @@ class HomeController extends AbstractController{
 
 	}
 	/**
-	*@Route("/exercice1/comment-allez-vous")
+	*@Route("/exercice1/comment-allez-vous", name="merci")
 	*/
 	public function merci(){
 		return new Response('<html><body><strong>bien,merci</strong></body></html>');
@@ -49,10 +49,10 @@ class HomeController extends AbstractController{
 
 
 	/**
-	*@Route("/exercice2/heure")
+	*@Route("/exercice2/heure", name="heure")
 	*/
 
-	public function date(){
+	public function heure(){
 
    		$heure = date('H\hi');
    		$date = date('d/m/Y');
@@ -81,4 +81,20 @@ class HomeController extends AbstractController{
 		return $this->redirectToRoute('home');
 	}
 
+	/**
+	*on peut contrôler ce que va contenir le placeholder avec une regex
+	*@Route("/exercice3/{age}/{nom}", name="pseudoAge", requirements={"nom"="[a-z]+", "age"="\d+"})
+	*/
+	public function pseudoAge($age,$nom){
+		//$nom est automatiquement envoyé en paramètre de notre méthode et contiendra tout ce qui suit bonjour/
+		return $this->render('exercice3.html.twig', array('age' => $age, 'pseudo' => $nom));
+
+	}
+
 }
+
+	// 	Créer une page  pour les url de type /exercice3/25/toto
+
+	// Ou 25 est un placeholder qui repr�sente un age (donc uniquement des chiffres) et toto un pseudo (donc uniquement des lettres)
+	// Créer une vue (exercice3.html.twig) qui va afficher, Bonjour 'pseudo' tu as 'age' ans
+	// Mettre an au singulier si age = 1

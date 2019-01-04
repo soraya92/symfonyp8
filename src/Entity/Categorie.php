@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CategorieRepository")
@@ -38,6 +40,20 @@ class Categorie
      * @ORM\Column(type="datetime")
      */
     private $date_creation;
+
+    /**
+    * je décris ma relation
+    *@ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="categorie")
+    */
+    
+    private $articles;
+
+    public function __construct(){
+        //on initialise la propriété articles lors de l'instanciation
+        //ArrayCollection se comporte comme un tableau
+        $this->articles = new ArrayCollection();    
+
+    }
 
     public function getId(): ?int
     {
@@ -78,6 +94,10 @@ class Categorie
         $this->date_creation = $date_creation;
 
         return $this;
+    }
+
+    public function getArticles(): Collection{
+        return $this->articles;
     }
 
 }

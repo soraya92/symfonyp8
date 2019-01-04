@@ -57,7 +57,6 @@ class AdminController extends AbstractController
     public function addArticleAdmin(Request $request)
     {
 
-        $article = new Article();
 
         $form = $this->createForm(ArticleAdminType::class);
         $form->handleRequest($request);
@@ -69,6 +68,7 @@ class AdminController extends AbstractController
             $article->setUser($this->getUser());
             //je fixe la date de publication de l'article
             $article->setDatePubli(new \DateTime(date('Y-m-d H:i:s')));
+            $entityManager= $this->getDoctrine()->getManager();
             $entityManager->persist($article);
             $entityManager->flush();
 
@@ -82,4 +82,36 @@ class AdminController extends AbstractController
 
        
     }
+
+    /**
+    *@Route("admin/article/update/{id}", name="updateArticleAdmin", requirements={"id"="\d+"})
+    */
+
+    public function updateArticleAdmin(Request $request, Article $article){
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        //je crée mon formulaire
+
+        $form = $this->createForm(ArticleAdminType::class, $article);
+        $form->handleRequest($request);
+        
+        if($form->isSubmitted() && $form->isValid()){
+
+            $article = $form->getData();
+
+            $article->setUser($this->getUser());
+
+            $entityManager= $this->getDoctrine()->getManager();
+            $entityManager->persist($article);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'article modifié');
+            return $this->redirectToRoute('articles');
+        
+        }
+
+        return $this->render('admin/add.html.twig', ['form' => $form->createView()]);
+    }
+
 }

@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Article;
 use Symfony\Component\HttpFoundation\Request;
-use App\Form\ArticleType;
+use App\Form\ArticleUserType;
 
 class ArticleController extends AbstractController{
     /**
@@ -64,7 +64,7 @@ class ArticleController extends AbstractController{
     	// $article->setAuthor('Moi');
 
 
-    	$form = $this->createForm(ArticleType::class);
+    	$form = $this->createForm(ArticleUserType::class);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
@@ -110,11 +110,12 @@ class ArticleController extends AbstractController{
 
 	public function updateArticle(Request $request, Article $article){
 
+
 		$entityManager = $this->getDoctrine()->getManager();
 
         //je crée mon formulaire
 
-        $form = $this->createForm(ArticleType::class, $article);
+        $form = $this->createForm(ArticleUserType::class, $article);
         $form->handleRequest($request);
         
         if($form->isSubmitted() && $form->isValid()){

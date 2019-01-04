@@ -4,15 +4,9 @@
 
 	{% block body %}
 		{{ form_start(form) }}
-		{{ form_label(form.title, 'titre', {'label_attr' : {'class':'ma-classe'}}) }}
-		{{ form_errors(form.title) }}
-		{{ form_widget(form.title, {'attr':{'class': 'form-control-lg', 'placeholder': 'libelle intéressant svp'}}) }}
+		
+		{{ form_widget(form) }}
 		{{ form_end(form) }}
 
-		{{form_row(form.content,
-				{
-					'attr':{'class':'form-control-lg', 'placeholder':'okkkkk'}
-				}
-			)}}
 			
 	{% endblock %}

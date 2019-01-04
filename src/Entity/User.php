@@ -57,10 +57,9 @@ class User implements UserInterface
     public function __construct(){
         //on initialise la propriété articles lors de l'instanciation
         //ArrayCollection se comporte comme un tableau
-        $this->articles = new ArrayCollection();
+        $this->articles = new ArrayCollection();    
 
     }
-
 
     public function getId(): ?int
     {

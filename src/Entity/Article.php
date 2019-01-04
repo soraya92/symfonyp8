@@ -48,6 +48,12 @@ class Article
     */
     private $user;
 
+    /**
+    * je décris ma relation
+    * @ORM\ManyToOne(targetEntity="App\Entity\Categorie", inversedBy="articles")
+    */
+    private $categorie;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -97,6 +103,18 @@ class Article
     public function setUser(User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCategorie(): ?Categorie
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(Categorie $categorie): self
+    {
+        $this->categorie = $categorie;
 
         return $this;
     }

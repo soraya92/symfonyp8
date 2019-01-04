@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
+{% extends 'base.html.twig' %}
 
+{% block title %}Bonjour {{ pseudo }}{% endblock %}
+
+{% block body %}
 	<h1>Bonjour pseudo</h1>
-	<p>bonjour {{pseudo}}</p>
-
-	<a href="{{ path('bonjour') }}">Bonjour</a>
-	<a href="{{ path('bonjourNom', {nom: 'toto'}) }}">Bonjour nom</a>
-	<a href="{{ path('merci') }}">Merci</a>
-	<a href="{{ path('heure') }}">date</a>
-	<a href="{{ path('pseudoAge', {age: '26', nom: 'toto'}) }}">pseudoAge</a>
-
-</body>
-</html>
+	<p>Bonjour {{ pseudo }}</p>
+{% endblock %}

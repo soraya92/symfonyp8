@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajout d'une catégorie{% endblock %}
+
+	{% block body %}
+		{# début de la génération du formulaire #}
+		{{ form_start(form) }}
+
+			{# génère les champs 
+			{{ form_widget(form) }}
+			#}
+			
+			{# customisation du label du champ libelle #}
+			{{ form_label(form.libelle, 'Libelle top', {'label_attr' : {'class':'ma-classe'}}) }}
+			{#génération des éventuelles erreurs #}
+			{{ form_errors(form.libelle) }}
+			{# génération du champ libelle #}
+			{{ form_widget(form.libelle, {'attr':{'class': 'form-control-lg', 'placeholder': 'libelle intéressant svp'}}) }}
+		{# fin de la génération du formulaire #}
+		{{ form_end(form) }}
+
+		<div class="autre-classe">
+			{# form_row() va générer le label, les ereurs et le champ #}
+			{{form_row(form.description,
+				{
+					'label': 'Soyez inventif svp',
+					'attr':{'class':'form-control-lg', 'placeholder':'okkkkk'}
+				}
+			)}}
+			}
+		</div>
+
+	{% endblock %}

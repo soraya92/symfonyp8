@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}	
+
+
+	{# affichage des éventuels messages flash #}
+
+	{% for message in app.flashes('success') %}
+		<div class="alert alert-success">
+			{{ message }}
+		</div>
+	{% endfor %}
+	
+		<section>
+			<h1>{{message.sujet}}</h1>
+			<p>{{message.contenu}}</p>
+			<p>publié le {{message.dateenvoi|date('d/m/Y') }}</p>
+			<p>Nom : {{message.nom}}</p>
+			<p>Email : {{message.email}}</p>
+		</section>
+{% endblock %}

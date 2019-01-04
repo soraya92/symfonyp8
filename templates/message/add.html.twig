@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Envoyer un message{% endblock %}
+
+	{% block body %}
+		{{ form_start(form) }}
+		{{ form_label(form.sujet, 'sujet', {'label_attr' : {'class':'ma-classe'}}) }}
+		{{ form_errors(form.sujet) }}
+		{{ form_widget(form.sujet, {'attr':{'class': 'form-control-lg', 'placeholder': 'sujet du message'}}) }}
+		{{ form_widget(form.nom, {'attr':{'class': 'form-control-lg', 'placeholder': 'votre nom'}}) }}
+		{{ form_end(form) }}
+
+		{{form_row(form.contenu,
+				{
+					'label': 'Contenu du message',
+					'attr':{'class':'form-control-lg', 'placeholder':'Mon message'}
+				}
+			)}}
+
+		<button class="btn btn-success">Envoyer</button>
+			
+	{% endblock %}

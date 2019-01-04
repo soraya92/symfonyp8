@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Liste des catégories{% endblock %}
+
+{% block body %}
+	{{ dump(categories) }}
+	{# affichage des éventuels messages flash #}
+	{% for label, messages in app.flashes %}
+		{% for message in messages %}
+		<div class="alert alert-{{ label }}">{{ message }}</div>
+		{% endfor %}
+	{% endfor %}
+
+
+	{% for categorie in categories %}
+		<div>
+			<h3>{{categorie.libelle}}</h3>
+			publié le {{categorie.datecreation|date('d/m/Y') }}
+		</div>
+		<li class="nav-item">
+		    <a class="nav-link" href="{{ path('idCategorie', {id: categorie.id}) }}">Voir la categorie</a>
+		    <a class="nav-link" href="{{ path('updateCategorie', {id: categorie.id}) }}">Modifier la categorie</a>
+		    <a class="nav-link" href="{{ path('deleteCategorie', {id: categorie.id}) }}">Supprimer la categorie</a>
+		</li>
+		{% endfor %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}	
+
+
+	{# affichage des éventuels messages flash #}
+
+	{% for message in app.flashes('success') %}
+		<div class="alert alert-success">
+			{{ message }}
+		</div>
+	{% endfor %}
+	
+		<article>
+			<h1>{{categorie.libelle}}</h1>
+			<p>{{categorie.description}}</p>
+			<p>publié le {{categorie.datecreation|date('d/m/Y') }}</p>
+		</article>
+{% endblock %}

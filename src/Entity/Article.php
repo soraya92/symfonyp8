@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
@@ -53,6 +55,22 @@ class Article
     * @ORM\ManyToOne(targetEntity="App\Entity\Categorie", inversedBy="articles")
     */
     private $categorie;
+
+    /**
+    * je décris ma relation
+    * @ORM\OneToMany(targetEntity="App\Entity\Commentaires", mappedBy="article")
+    */
+    private $comments;
+
+    /**
+    * @ORM\Column(type="string")
+    * @Assert\Image
+    */
+    private $image;   //pour uploader une image
+
+    public function __construct(){
+        $this->comments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -117,5 +135,19 @@ class Article
         $this->categorie = $categorie;
 
         return $this;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+
+    }
+    public function setImage($image){
+        $this->image = $image;
+        return $this;
+    }
+
+    public function getComments(): Collection{
+        return $this->comments;
     }
 }

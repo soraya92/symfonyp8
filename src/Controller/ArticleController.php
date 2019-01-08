@@ -6,7 +6,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Article;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\File\File;
 use App\Form\ArticleUserType;
+use App\Service\FileUploader;
+use App\Form\CommentType;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 
 class ArticleController extends AbstractController{
     /**
@@ -30,25 +35,51 @@ class ArticleController extends AbstractController{
     *@Route("/article/{id}", name="idArticle", requirements={"id"="\d+"});
     */
 
-    public function idArticle($id){
-    	$repository = $this->getDoctrine()->getRepository(Article::class);
-    	$article = $repository->find($id);
+    public function idArticle(Article $article, Request $request){
 
     	//génération d'une erreur si aucun article n'est trouvé
     	if(!$article){
     		throw $this->createNotFoundException('No article found');
     	}
 
-    	return $this->render('article/article.html.twig', [
-            'article' => $article,
-        ]);
+        $commentForm = $this->createForm(CommentType::class);
+        // si on veut restreindre l'ajout de commentaire aux utilisateurs connectés
+    	$user = $this->getUser();
+        if($user instanceof UserInterface){
+        
+            $commentForm->handleRequest($request);
+
+            if($commentForm->isSubmitted() && $commentForm->isValid()){
+
+                $comment = $commentForm->getData();
+                //je dois préciser qui est l'auteur du commentaire
+                $comment->setUser($this->getUser());
+               
+                //je décide de l'article qu'il va commenter
+                $comment->setArticle($article); 
+                $comment->setDatePubli(new \DateTime(date('Y-m-d H:i:s')));
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($comment);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'commentaire ajouté');
+
+            }
+        }
+
+        return $this->render('article/article.html.twig', ['article' => $article,
+                    'commentForm' => $commentForm->createView()
+                ]);
+
     }
 
     /**
     *@Route("/article/add", name="addArticle")
     */
 
-    public function addArticle(Request $request){
+    public function addArticle(Request $request, FileUploader $fileuploader){
+
 
         //seul un utilisteur connecté peut ajouter un article
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
@@ -63,13 +94,28 @@ class ArticleController extends AbstractController{
     	// $article->setDatePubli(new  \DateTime(date('Y-m-d H:i:s')));
     	// $article->setAuthor('Moi');
 
-
     	$form = $this->createForm(ArticleUserType::class);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
 
 			$article = $form->getData();
+
+            //$article->getImage() contient un objet qui représente le fichier image envoyé
+            $file = $article->getImage(); 
+
+            $filename = $file ? $fileuploader->upload($file, $this->getParameter('article_image_directory')) : '';
+
+
+            // génération du nom du fichier
+            // $filename = md5(uniqid()) . '.' . $file->guessExtension();
+
+            // on transfère le fichier sur le serveur
+            // $file->move($this->getParameter('article_image_directory'), $filename);
+            // je remplace l'attribut image qui contient toujours le fichier par le nom du fichier
+
+            $article->setImage($filename);
+
             //l'auteur de l'article est l'utilisateur connecté
             $article->setUser($this->getUser());
             //je fixe la date de publication de l'article
@@ -108,7 +154,19 @@ class ArticleController extends AbstractController{
 
 	*/
 
-	public function updateArticle(Request $request, Article $article){
+	public function updateArticle(Request $request, Article $article, FileUploader $fileuploader){
+
+        $this->denyAccessUnlessGranted('edit', $article);
+
+        //je stocke le nom du fichier image
+
+        $filename = $article->getImage();
+        //on remplace le nom du fichier par un objet de classe file
+        // pour pouvoir générer le formulaire
+
+        if($article->getImage()){
+            $article->setImage(new File($this->getParameter('upload_directory') . $this->getParameter('article_image_directory') . '/' . $filename));
+        }
 
 
 		$entityManager = $this->getDoctrine()->getManager();
@@ -122,7 +180,16 @@ class ArticleController extends AbstractController{
 
             $article = $form->getData();
 
-            $article->setUser($this->getUser());
+            //je ne fais le traitement que si une image a été envoyée
+
+            if($article->getImage()){
+                //je récupère le fichier
+                $file = $article->getImage();
+                $filename = $fileuploader->upload($file, $this->getParameter('article_image_directory'), $filename);
+                
+            }
+
+            $article->setImage($filename);
             $entityManager->flush();
 
             $this->addFlash('success', 'article modifié');
@@ -164,6 +231,8 @@ class ArticleController extends AbstractController{
 	    */
 
 	    public function deleteArticle(Article $article){
+
+            $this->denyAccessUnlessGranted('delete', $article, 'Vous ne pouvez pas supprimer cet article');
 	    	// quand j'écris l'objet article dans le paramètre, je n'ai pas besoin de ces lignes : 
 	    	// $repository = $this->getDoctrine()->getRepository(Article::class);
 	    	// $article = $repository->find($id);
@@ -184,6 +253,4 @@ class ArticleController extends AbstractController{
 
 	    }
 
-
-    
 }

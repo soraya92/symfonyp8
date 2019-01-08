@@ -7,8 +7,18 @@
 		{{ dump(moi) }}
 		<p>pseudo : {{moi.username}}</p>
 		<p>email : {{moi.email}}</p>
+
+		{% if moi.photo %}
+			<img src="{{ asset('uploads/user/image/' ~ moi.photo) }}">
+		{% endif %}
 	
-	{# on peut directement accéder à l'utilisateur connecté dans n'importe quelle vue twig gr^^ave à app.user #}
+	{# on peut directement accéder à l'utilisateur connecté dans n'importe quelle vue twig grâce à app.user #}
+
+	<form method="post" enctype="multipart/form-data">
+		
+		<input type="file" name="photo" class="form-control">
+		<button>Envoyer</button>
+	</form>
 	{{ dump(app.user) }}
 	<p>Bonjour {{ app.user.username }}, {{ app.user.email }}</p>
 	{# si je veux afficher les articles de l'utilisateur #}

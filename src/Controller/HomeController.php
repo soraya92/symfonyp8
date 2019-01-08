@@ -6,6 +6,7 @@ namespace App\Controller;
 use Symfony\Component\HttpFoundation\Response;
 //pour pouvoir utiliser les annotations
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 // Créer une page  pour l'url /exercice1/comment-allez-vous, qui affiche "bien, merci"
 
@@ -91,10 +92,30 @@ class HomeController extends AbstractController{
 
 	}
 
-}
 
 	// 	Créer une page  pour les url de type /exercice3/25/toto
 
 	// Ou 25 est un placeholder qui repr�sente un age (donc uniquement des chiffres) et toto un pseudo (donc uniquement des lettres)
 	// Créer une vue (exercice3.html.twig) qui va afficher, Bonjour 'pseudo' tu as 'age' ans
 	// Mettre an au singulier si age = 1
+
+
+	/** 
+	* Page test pour accéder à get ou post
+	* @Route("/test-get", name="test-get")
+
+*/
+	public function testGet(Request $request){
+		//pour accéder à $_GET
+		$get = $request->query->all();
+		//$_POST
+		$post = $request->request->all(); 
+		//$_FILES
+		$files = $request->files->all(); 
+		// si j'attends un paramètre message ?message=jfhksjdfh
+		$message = $request->query->get('message', 'pas de message');
+
+		dump($get);
+		return $this->render("test.request.html.twig", ['message' => $message]);
+	}
+}

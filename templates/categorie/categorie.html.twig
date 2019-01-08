@@ -16,5 +16,17 @@
 			<h1>{{categorie.libelle}}</h1>
 			<p>{{categorie.description}}</p>
 			<p>publié le {{categorie.datecreation|date('d/m/Y') }}</p>
-		</article>
+			</article>
+			
+			{# categorie.articles contient un tableau d'articles liés à cette catégorie #}
+
+			il y a {{ categorie.articles|length }} articles dans cette catégorie
+
+			<h3>Articles de cette catégorie :</h3>
+				{% for article in categorie.articles %} 
+					<a href="{{ path('idArticle', {id:article.id}) }}">{{ article.title }}</a>
+					<p>{{article.title}}</p>				
+				{% endfor %}	
 {% endblock %}
+
+	

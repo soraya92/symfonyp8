@@ -7,7 +7,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
@@ -54,10 +54,22 @@ class User implements UserInterface
 
     private $articles;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Image
+     */
+    private $photo;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Commentaires", mappedBy="user")
+     */
+    private $article;
+
     public function __construct(){
         //on initialise la propriété articles lors de l'instanciation
         //ArrayCollection se comporte comme un tableau
-        $this->articles = new ArrayCollection();    
+        $this->articles = new ArrayCollection();
+        $this->article = new ArrayCollection();    
 
     }
 
@@ -163,6 +175,49 @@ class User implements UserInterface
     */
     public function getArticles(): Collection{
         return $this->articles;
+    }
+
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto($photo)
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Commentaires[]
+     */
+    public function getArticle(): Collection
+    {
+        return $this->article;
+    }
+
+    public function addArticle(Commentaires $article): self
+    {
+        if (!$this->article->contains($article)) {
+            $this->article[] = $article;
+            $article->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticle(Commentaires $article): self
+    {
+        if ($this->article->contains($article)) {
+            $this->article->removeElement($article);
+            // set the owning side to null (unless already changed)
+            if ($article->getUser() === $this) {
+                $article->setUser(null);
+            }
+        }
+
+        return $this;
     }
 
 }

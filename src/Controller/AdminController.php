@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use App\Entity\Article;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\ArticleAdminType;
+use Symfony\Component\HttpFoundation\File\File;
 
 class AdminController extends AbstractController
 {
@@ -64,6 +65,17 @@ class AdminController extends AbstractController
         if($form->isSubmitted() && $form->isValid()){
 
             $article = $form->getData();
+
+            if($article->getImage()){
+                $file = $article->getImage();
+                $filename = md5(uniqid()) . '.' . $file->guessExtension();
+
+                $file->move(
+                    $this->getParamater('article_image_directory'), $filename);
+            }
+
+            $article->setImage($filename);
+            
             //l'auteur de l'article est l'utilisateur connecté
             $article->setUser($this->getUser());
             //je fixe la date de publication de l'article
@@ -89,7 +101,14 @@ class AdminController extends AbstractController
 
     public function updateArticleAdmin(Request $request, Article $article){
 
+        $filename = $article->getImage();
         $entityManager = $this->getDoctrine()->getManager();
+
+        if($article->getImage()){
+            $article->setImage(new File($this->getParamater('article_image_directory') . '/' . $filename));
+        }
+
+        $entityManager = $this->getDoctrine()->getManager(); 
 
         //je crée mon formulaire
 
@@ -100,10 +119,15 @@ class AdminController extends AbstractController
 
             $article = $form->getData();
 
-            $article->setUser($this->getUser());
+            if($article->getImage()){
+                $file = $article->getImage();
+                $filename = md5(uniqid()) . '.' . $file->guessExtension();
+                $file->move(
+                    $this->getParamater('article_image_directory'), $filename); 
+            }
 
-            $entityManager= $this->getDoctrine()->getManager();
-            $entityManager->persist($article);
+            $article->setImage($filename);
+
             $entityManager->flush();
 
             $this->addFlash('success', 'article modifié');

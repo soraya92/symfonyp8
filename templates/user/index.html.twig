@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Liste des utilisateurs{% endblock %}
+
+{% block body %}
+
+	{% for user in users %}
+		<div>
+			<h3>{{user.username}}</h3>
+			<p>{{user.email}}</p>
+		</div>
+		<li class="nav-item">
+		    <a class="nav-link" href="{{ path('showUser', {id: user.id}) }}">Voir l'utilisateur</a>
+		</li>
+		{% endfor %}
+{% endblock %}
